@@ -39,10 +39,31 @@ public:
 		}
 	}
 
-	void mul(double n)
+	vectorNode mul(double n)
+	{
+		vectorNode result(this->l);
+		for (unsigned int i = 0; i < l; i++)
+		    result.v[i]=this->v[i]*n;
+		return result;
+	}
+
+	vectorNode add(vectorNode v2)
+	{
+		if(v2.l!=this->l)
+		    throw string("两个向量维度不对不能相加");
+		else
+		{
+		    vectorNode result(this->l);
+		    for (unsigned int i = 0; i < l; i++)
+			result.v[i]=this->v[i]+v2.v[i];
+		    return result;
+		}
+	}
+
+	void opposite()
 	{
 		for (unsigned int i = 0; i < l; i++)
-			this->v[i] *= n;
+		    this->v[i]*=-1;
 	}
 
 	void output()
@@ -173,6 +194,27 @@ public:
 			}
 			return result;
 		}
+	}
+	
+	matrixNode add(matrixNode m2)
+	{
+		if(m2.c==this->c&&m2.r==this->r)
+		{
+		    matrixNode result(this->r,this->c);
+		    for (unsigned int i = 0; i < this->r; i++)
+			for (unsigned int j = 0; j < this->c; j++)
+			    result.m[i][j]=this->m[i][j]+v2.m[i][j];
+		    return result;
+		}
+		else
+		    throw string("两个矩阵维度不对不能相加");
+	}
+
+	void opposite()
+	{
+		for (unsigned int i = 0; i < this->r; i++)
+		    for (unsigned int j = 0; j < this->c; j++)
+			this->m[i][j]*=-1;
 	}
 
 	void output()
