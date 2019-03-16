@@ -14,6 +14,8 @@ void Init()
     Function* log = new Function(BuiltinFunc::hasTwoSonNodes, BuiltinFunc::log, 2);
     Function* ln = new Function(BuiltinFunc::hasOneSonNode, BuiltinFunc::ln, 1);
 
+    Function* assignment = new Function(BuiltinFunc::assignmentCheck, BuiltinFunc::assignment, 2);
+
     Function* vecDot = new Function(BuiltinFunc::twoVec, BuiltinFunc::vecDot, 2);
     Function* matDot = new Function(BuiltinFunc::twoMat, BuiltinFunc::matDot, 2);
     Function* matAdd = new Function(BuiltinFunc::twoMat, BuiltinFunc::matAdd, 2);
@@ -34,6 +36,7 @@ void Init()
     record::globalScope.addFunction("*",mul);
     record::globalScope.addFunction("/",div);
     record::globalScope.addFunction("^",pow);
+    record::globalScope.addFunction("=",assignment);
     record::globalScope.addFunction("sin",sin);
     record::globalScope.addFunction("cos",cos);
     record::globalScope.addFunction("log", log);
@@ -56,6 +59,7 @@ void Init()
     //Function* entity=runtime::globalScope.functionList["+"]; //在parse阶段，可以这样从函数域中找到函数名对应的函数实体
     //FunNode* testNode=new FunNode(entity); //然后这样通过函数实体创建相应的函数节点
     BinOpPriority["$"] =0;
+    BinOpPriority["="] =1;
     BinOpPriority["+"] =10;
     BinOpPriority["-"] =10;
     BinOpPriority["*"] =20;

@@ -2,6 +2,7 @@
 #include <cmath>
 #include "matrix.hpp"
 
+//typeCheck
 bool BuiltinFunc::hasOneSonNode(vector<BasicNode*> &sonNode)
 {
     return sonNode.at(0)->getType() == Num;
@@ -10,6 +11,18 @@ bool BuiltinFunc::hasOneSonNode(vector<BasicNode*> &sonNode)
 bool BuiltinFunc::hasTwoSonNodes(vector<BasicNode*> &sonNode)
 {
     return sonNode.at(0)->getType() == Num && sonNode.at(1)->getType() == Num;
+}
+
+bool BuiltinFunc::assignmentCheck(vector<BasicNode *> &sonNode)
+{
+    if(sonNode.at(0)->getType() == Var)
+    {
+        BasicNode* result=sonNode.at(1)->eval();
+        if(copyHelp::isLiteral(result))
+            return true;
+    }
+    else
+        return false;
 }
 
 bool BuiltinFunc::oneMat(vector<BasicNode *> &sonNode)
@@ -53,6 +66,7 @@ double BuiltinFunc::getNum(BasicNode *node)
     return dynamic_cast<NumNode*>(node)->getNum();
 }
 
+//FunBody
 BasicNode* BuiltinFunc::add(vector<BasicNode *> &sonNode)
 {
     return new NumNode(BuiltinFunc::getNum(sonNode[0]) + BuiltinFunc::getNum(sonNode[1]));
@@ -199,4 +213,11 @@ BasicNode* BuiltinFunc::linerSolve(vector<BasicNode *> &sonNode)
     matrixNode* m1=(matrixNode*)sonNode[0];
     vectorNode* m2=(vectorNode*)sonNode[1];
     return new vectorNode(matrixNode::solve(*m1,*m2));
+}
+
+BasicNode* BuiltinFunc::assignment(vector<BasicNode *> &sonNode)
+{
+    VarNode* v=(VarNode*)sonNode[0];
+    v->setVal(sonNode[1]); //在参数类型检查时已经进行eval
+    return copyHelp::copyVal(sonNode[1]); //支持yoda表达法
 }

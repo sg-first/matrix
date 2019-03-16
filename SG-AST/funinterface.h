@@ -2,8 +2,8 @@
 #include "nodetype.h"
 #include <cmath>
 
-#define TypeJudge(name) static bool name(vector<BasicNode*>&sonNode)
-#define _TypeJudge(name) bool BuiltinFunc::name(vector<BasicNode*>&sonNode)
+#define TypeCheck(name) static bool name(vector<BasicNode*>&sonNode)
+#define _TypeCheck(name) bool BuiltinFunc::name(vector<BasicNode*>&sonNode)
 #define FunBody(name) static BasicNode* name(vector<BasicNode*>&sonNode)
 #define _FunBody(name) BasicNode* BuiltinFunc::name(vector<BasicNode*>&sonNode)
 
@@ -13,16 +13,17 @@ private:
     static double getNum(BasicNode* node);
 public:
     //判断函数参数个数是否合法
-    TypeJudge(hasOneSonNode);
-    TypeJudge(hasTwoSonNodes);
+    TypeCheck(hasOneSonNode);
+    TypeCheck(hasTwoSonNodes);
+    TypeCheck(assignmentCheck);
 
-    TypeJudge(oneMat);
-    TypeJudge(twoVec);
-    TypeJudge(twoMat);
-    TypeJudge(vecNum);
-    TypeJudge(matNum);
-    TypeJudge(matVec);
-    TypeJudge(matVecNum);
+    TypeCheck(oneMat);
+    TypeCheck(twoVec);
+    TypeCheck(twoMat);
+    TypeCheck(vecNum);
+    TypeCheck(matNum);
+    TypeCheck(matVec);
+    TypeCheck(matVecNum);
     //内置函数
     FunBody(add);
     FunBody(sub);
@@ -35,6 +36,8 @@ public:
 
     FunBody(log);
     FunBody(ln);
+
+    FunBody(assignment);
 
     FunBody(vecDot);
     FunBody(matDot);
