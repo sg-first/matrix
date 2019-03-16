@@ -60,12 +60,6 @@ public:
         }
     }
 
-    void opposite()
-    {
-        for (unsigned int i = 0; i < l; i++)
-            this->v[i]*=-1;
-    }
-
     void output()
     {
         for (unsigned int i = 0; i < l; i++)
@@ -239,13 +233,6 @@ public:
         }
         else
             throw string("两个矩阵维度不对不能相加");
-    }
-
-    void opposite()
-    {
-        for (unsigned int i = 0; i < this->r; i++)
-            for (unsigned int j = 0; j < this->c; j++)
-                this->m[i][j]*=-1;
     }
 
     void output()
