@@ -12,6 +12,7 @@ void Init()
     Function* sin = new Function(BuiltinFunc::hasOneSonNode, BuiltinFunc::sin,1);
     Function* cos = new Function(BuiltinFunc::hasOneSonNode, BuiltinFunc::cos,1);
     Function* log = new Function(BuiltinFunc::hasTwoSonNodes, BuiltinFunc::log, 2);
+    Function* ln = new Function(BuiltinFunc::hasOneSonNode, BuiltinFunc::ln, 1);
 
     Function* vecDot = new Function(BuiltinFunc::twoVec, BuiltinFunc::vecDot, 2);
     Function* matDot = new Function(BuiltinFunc::twoMat, BuiltinFunc::matDot, 2);
