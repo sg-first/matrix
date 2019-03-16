@@ -146,6 +146,28 @@ public:
 			result.v[i] = this->m[i][cn];
 		return result;
 	}
+	
+	void setRVector(vectorNode v, unsigned int rn)
+	{
+		if(v.l!=this->c)
+		    throw string("赋值的向量维度与矩阵行列长度不匹配");
+		else
+		{
+		    for (unsigned int i = 0; i < this->c; i++)
+			this->m[rn][i]=v.v[i];
+		}
+	}
+
+	void setCVector(vectorNode v, unsigned int cn)
+	{
+		if(v.l!=this->r)
+		    throw string("赋值的向量维度与矩阵行列长度不匹配");
+		else
+		{
+		    for (unsigned int i = 0; i < this->r; i++)
+			this->m[i][cn]=v.v[i];
+		}
+	}
 
 	double det()
 	{
