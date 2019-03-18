@@ -71,7 +71,7 @@ public:
     {
         for (unsigned int i = 0; i < l; i++)
         {
-            printf("%g\t", v[i]);
+            printf("%g ", v[i]);
         }
         printf("\n");
     }
@@ -254,9 +254,9 @@ public:
         {
             for (unsigned int j = 0; j < c; j++)
             {
-                printf("%g\t", m[i][j]);
+                printf("%g ", m[i][j]);
             }
-            printf("\n");
+            printf("\n\t");
         }
     }
 

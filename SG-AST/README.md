@@ -26,8 +26,8 @@ void Init()
     Function* matMul = new Function(BuiltinFunc::matNum, BuiltinFunc::matMul, 2);
     Function* getRVector = new Function(BuiltinFunc::matNum, BuiltinFunc::getRVector, 2);
     Function* getCVector = new Function(BuiltinFunc::matNum, BuiltinFunc::getCVector, 2);
-    Function* setCVector = new Function(BuiltinFunc::matVecNum, BuiltinFunc::setCVector, 3);
-    Function* setRVector = new Function(BuiltinFunc::matVecNum, BuiltinFunc::setRVector, 3);
+    Function* setCVector = new Function(BuiltinFunc::pmatVecNum, BuiltinFunc::setCVector, 3);
+    Function* setRVector = new Function(BuiltinFunc::pmatVecNum, BuiltinFunc::setRVector, 3);
     Function* det = new Function(BuiltinFunc::oneMat, BuiltinFunc::det, 1);
     Function* linerSolve = new Function(BuiltinFunc::twoMat, BuiltinFunc::linerSolve, 2);
     //将这些函数置入函数域
@@ -37,6 +37,10 @@ void Init()
     record::globalScope.addFunction("/",div);
     record::globalScope.addFunction("^",pow);
     record::globalScope.addFunction("=",assignment);
+    //fix:目前=是通过局部求值实现的，即在被赋值变量原先没有值的情况下，局部求值模式下eval结果仍然为
+    //变量本身，这样传进=函数之后左边儿子就是变量本身，可以正确赋值。一旦变量已经被赋值，那进入=前
+    //就会被eval为它的值，值不能赋值给值，这就错了。因此现在这个写法不好。正确的做法应该是在parse阶段
+    //创建每个变量的指针（二级varnode），然后将这个指针作为=的左边儿子
     record::globalScope.addFunction("sin",sin);
     record::globalScope.addFunction("cos",cos);
     record::globalScope.addFunction("log", log);

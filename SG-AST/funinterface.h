@@ -23,7 +23,7 @@ public:
     TypeCheck(vecNum);
     TypeCheck(matNum);
     TypeCheck(matVec);
-    TypeCheck(matVecNum);
+    TypeCheck(pmatVecNum);
     //内置函数
     FunBody(add);
     FunBody(sub);

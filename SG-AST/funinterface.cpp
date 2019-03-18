@@ -19,7 +19,9 @@ bool BuiltinFunc::assignmentCheck(vector<BasicNode *> &sonNode)
     {
         BasicNode* result=sonNode.at(1)->eval();
         if(copyHelp::isLiteral(result))
+        {
             return true;
+        }
     }
     else
         return false;
@@ -55,10 +57,10 @@ bool BuiltinFunc::matVec(vector<BasicNode *> &sonNode)
     return sonNode.at(0)->getType() == Matrix && sonNode.at(1)->getType() == Vector;
 }
 
-bool BuiltinFunc::matVecNum(vector<BasicNode *> &sonNode)
+bool BuiltinFunc::pmatVecNum(vector<BasicNode *> &sonNode)
 {
-    return sonNode.at(0)->getType() == Matrix && sonNode.at(1)->getType() == Vector &&
-            sonNode.at(2)->getType() == Num;
+    return sonNode.at(0)->getType() == Var && ((VarNode*)sonNode.at(0))->getValType() == Matrix &&
+            sonNode.at(1)->getType() == Vector && sonNode.at(2)->getType() == Num;
 }
 
 double BuiltinFunc::getNum(BasicNode *node)
@@ -186,7 +188,7 @@ BasicNode* BuiltinFunc::getRVector(vector<BasicNode *> &sonNode)
 
 BasicNode* BuiltinFunc::setCVector(vector<BasicNode *> &sonNode)
 {
-    matrixNode* m1=(matrixNode*)sonNode[0];
+    matrixNode* m1=(matrixNode*)(((VarNode*)sonNode[0])->getVal());
     vectorNode* v2=(vectorNode*)sonNode[1];
     NumNode* n3=(NumNode*)sonNode[2];
     m1->setCVector(*v2,n3->getNum());
@@ -195,7 +197,7 @@ BasicNode* BuiltinFunc::setCVector(vector<BasicNode *> &sonNode)
 
 BasicNode* BuiltinFunc::setRVector(vector<BasicNode *> &sonNode)
 {
-    matrixNode* m1=(matrixNode*)sonNode[0];
+    matrixNode* m1=(matrixNode*)(((VarNode*)sonNode[0])->getVal());
     vectorNode* v2=(vectorNode*)sonNode[1];
     NumNode* n3=(NumNode*)sonNode[2];
     m1->setRVector(*v2,n3->getNum());
@@ -218,6 +220,6 @@ BasicNode* BuiltinFunc::linerSolve(vector<BasicNode *> &sonNode)
 BasicNode* BuiltinFunc::assignment(vector<BasicNode *> &sonNode)
 {
     VarNode* v=(VarNode*)sonNode[0];
-    v->setVal(sonNode[1]); //在参数类型检查时已经进行eval
-    return copyHelp::copyVal(sonNode[1]); //支持yoda表达法
+    v->setVal(copyHelp::copyVal(sonNode[1])); //在参数类型检查时已经进行eval
+    return v->eval(); //支持yoda表达法
 }
