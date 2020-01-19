@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <math.h>
+#include <tuple>
 #include "exception.h"
 using namespace std;
 
@@ -336,7 +337,7 @@ public:
                         }
                     }
                 }
-                const double& x = t.m[i][i];
+                double x = t.m[i][i];
                 for (unsigned int j = i + 1; j < nonZero; j++)
                     t.rsub(j, i, t.m[j][i] / x);
                 //更新nonZero，把所有零行放到矩阵下面
@@ -372,6 +373,48 @@ public:
                     retn.m[i][j] = this->m[i / m.r][j / this->c] * m.m[i % this->r][j % m.c];
             return retn;
         }
+
+        tuple<matrix,matrix,matrix> LUP() const
+        {
+            if (this->r != this->c)
+                throw SquareException();
+            unsigned int n = this->r;
+            matrix a = *this;
+            auto abs = [](double n) {return n >= 0 ? n : -n; };
+            matrix l(n, n);
+            matrix u(n, n);
+            matrix p = matrix::identity(n);
+            for (unsigned int k = 0; k < n; k++)
+            {
+                double m = 0;
+                unsigned int  kp = 0;
+                for (unsigned int i = k; i < n; i++)
+                {
+                    if (abs(a.m[i][k]) > m)
+                    {
+                        m = abs(a.m[i][k]);
+                        kp = i;
+                    }
+                }
+                if (m == 0)
+                    throw string("奇异矩阵");
+                p.rswap(k, kp);
+                a.rswap(k, kp);
+                l.rswap(k, kp);
+                l.m[k][k] = 1;
+                for (unsigned int i = k; i < n; i++)
+                    u.m[k][i] = a.m[k][i];
+                for (unsigned int i = k + 1; i < n; i++)
+                {
+                    a.m[i][k] /= a.m[k][k];
+                    for (unsigned int j = k + 1; j < n; j++)
+                        a.m[i][j] -= a.m[i][k] * a.m[k][j];
+                    l.m[i][k] = a.m[i][k];
+                }
+            }
+            return make_tuple(l,u,p);
+        }
+
 
         void rsub(unsigned int r1, unsigned int r2, double m)
         {
@@ -430,5 +473,18 @@ public:
                         result.v[i] = mb.det() / D;
                 }
                 return result;
+        }
+
+        static matrix eye(unsigned int r, unsigned int c)
+        {
+            matrix retn(r, c);
+            for (unsigned int  i = 0; i < (r < c ? r : c); i++)
+                retn.m[i][i] = 1;
+            return retn;
+        }
+
+        static matrix identity(unsigned int n)
+        {
+            return matrix::eye(n, n);
         }
 };
