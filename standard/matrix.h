@@ -107,6 +107,25 @@ private:
             return true;
         }
 
+        void free()
+        {
+            for (unsigned int i = 0; i < r; i++)
+                    delete[] m[i];
+            delete[] m;
+        }
+
+        void copy(const matrix& m2)
+        {
+            this->r = m2.r;
+            this->c = m2.c;
+            this->malloc();
+            for (unsigned int i = 0; i < r; i++)
+            {
+                for (unsigned int j = 0; j < c; j++)
+                    this->m[i][j] = m2.m[i][j];
+            }
+        }
+
 public:
         double **m;
 
@@ -125,21 +144,19 @@ public:
 
         matrix(const matrix& m2)
         {
-                this->r = m2.r;
-                this->c = m2.c;
-                this->malloc();
-                for (unsigned int i = 0; i < r; i++)
-                {
-                        for (unsigned int j = 0; j < c; j++)
-                                this->m[i][j] = m2.m[i][j];
-                }
+            this->copy(m2);
         }
 
         ~matrix()
         {
-                for (unsigned int i = 0; i < r; i++)
-                        delete[] m[i];
-                delete[] m;
+            this->free();
+        }
+
+        matrix& operator=(const matrix& m2)
+        {
+            this->free();
+            this->copy(m2);
+            return *this;
         }
 
         unsigned int getr() { return r; }
