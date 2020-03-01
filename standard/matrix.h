@@ -10,23 +10,41 @@ class vector
 private:
         unsigned int l;
 
+        void malloc()
+        {
+            this->v = new double[l];
+        }
+
+        void copy(const vector& m2)
+        {
+            this->l = m2.l;
+            this->malloc();
+            for (unsigned int i = 0; i < l; i++)
+                this->v[i] = m2.v[i];
+        }
+
+        void free() { delete[]v; }
+
 public:
         double *v;
 
-        vector(unsigned int l)
+        vector(unsigned int l) : l(l)
         {
-                this->l = l;
-                this->v = new double[l];
-                for (unsigned int i = 0; i < l; i++)
-                        this->v[i] = 0;
+            this->malloc();
+            for (unsigned int i = 0; i < l; i++)
+                this->v[i] = 0;
         }
 
         vector(const vector& m2)
         {
-                this->l = m2.l;
-                this->v = new double[l];
-                for (unsigned int i = 0; i < l; i++)
-                        this->v[i] = m2.v[i];
+            this->copy(m2);
+        }
+
+        vector& operator=(const vector& m2)
+        {
+            this->free();
+            this->copy(m2);
+            return *this;
         }
 
         double dot(const vector &v2) const
