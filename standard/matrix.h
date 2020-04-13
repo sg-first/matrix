@@ -3,7 +3,10 @@
 #include <math.h>
 #include <tuple>
 #include "exception.h"
+#include <functional>
 using namespace std;
+
+typedef unsigned int uint;
 
 class vector
 {
@@ -28,11 +31,32 @@ private:
 public:
         double *v;
 
+        static vector one(uint l, uint pos)
+        {
+            vector retn(l);
+            for(uint i=0;i<retn.getl();i++)
+            {
+                if(i==pos)
+                    retn.v[pos] = 1;
+                else
+                    retn.v[i] = 0;
+            }
+            return retn;
+        }
+
         vector(unsigned int l) : l(l)
         {
             this->malloc();
             for (unsigned int i = 0; i < l; i++)
                 this->v[i] = 0;
+        }
+
+        vector(uint l, const std::function<double(uint)>& f)
+        {
+            this->l = l;
+            this->malloc();
+            for (uint i = 0; i < this->l; i++)
+                this->v[i] = f(i);
         }
 
         vector(const vector& m2)
@@ -45,6 +69,11 @@ public:
             this->free();
             this->copy(m2);
             return *this;
+        }
+
+        double operator[](const uint i) const
+        {
+            return this->v[i];
         }
 
         double dot(const vector &v2) const
@@ -99,7 +128,7 @@ public:
         }
 
         ~vector() { delete[]v; }
-        unsigned int getl() { return l; }
+        unsigned int getl() const { return l; }
 };
 
 
@@ -144,6 +173,9 @@ private:
             }
         }
 
+        vector solveWithLUP(const matrix& L, const matrix& U, const vector& P, const vector& b) const;
+        std::tuple<matrix,matrix,vector> LUPVec() const;
+
 public:
         double **m;
 
@@ -158,6 +190,28 @@ public:
                         for (unsigned int j = 0; j < c; j++)
                                 this->m[i][j] = 0;
                 }
+        }
+
+        matrix(const vector& v, bool isR)
+        {
+            if (isR)
+            {
+                this->r = v.getl();
+                this->c = 1;
+            }
+            else
+            {
+                this->r = 1;
+                this->c = v.getl();
+            }
+
+            this->malloc();
+            if (isR)
+                for (uint i = 0; i < this->r; i++)
+                    this->m[i][0] = v[i];
+            else
+                for (uint i = 0; i < this->c; i++)
+                    this->m[0][i] = v[i];
         }
 
         matrix(const matrix& m2)
@@ -280,8 +334,15 @@ public:
 
         matrix inv() const
         {
-            double d=this->det();
-            return this->adjoint().mul(1/d);
+            uint n = this->r;
+            matrix L(1,1), U(1,1);
+            vector P(1);
+            std::tie(L,U,P)=this->LUPVec();
+            vector VP(P);
+            matrix retn(n, n);
+            for (uint i = 0; i < n; i++)
+                retn.setCVector(solveWithLUP(L, U, P, vector::one(n, i)), i);
+            return retn;
         }
 
         matrix dot(const matrix &m2) const
@@ -494,6 +555,11 @@ public:
                 }
                 printf("\n");
             }
+        }
+
+        double* operator[](const uint i) const
+        {
+            return this->m[i];
         }
 
         static vector solve(matrix m, vector v) //克拉默法则求解
