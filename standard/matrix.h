@@ -474,7 +474,7 @@ public:
 
         vector GSSolve(vector B, uint iterNum=100) const;
         vector JacobiSolve(vector B, uint iterNum=100) const;
-        vector SOCSolve(vector B, uint iterNum=100) const;
+        vector SORSolve(vector B, uint iterNum=100) const;
 
         void rsub(unsigned int r1, unsigned int r2, double m)
         {
