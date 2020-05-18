@@ -166,7 +166,7 @@ vector matrix::JacobiSolve(vector B, uint iterNum) const
     return X;
 }
 
-vector matrix::SOCSolve(vector B, uint iterNum) const
+vector matrix::SORSolve(vector B, uint iterNum) const
 {
     uint num=this->getc();
     vector X(num);
