@@ -4,7 +4,6 @@
 #include <tuple>
 #include "exception.h"
 #include <functional>
-using namespace std;
 
 typedef unsigned int uint;
 
@@ -138,6 +137,7 @@ private:
         unsigned int r;
         unsigned int c;
         const double Err = 1e-5;
+        const double epsilon = 0.00001;
 
         void malloc()
         {
@@ -231,8 +231,8 @@ public:
             return *this;
         }
 
-        unsigned int getr() { return r; }
-        unsigned int getc() { return c; }
+        unsigned int getr() const { return r; }
+        unsigned int getc() const { return c; }
 
         vector getRVector(unsigned int rn) const
         {
@@ -470,8 +470,11 @@ public:
             return retn;
         }
 
-        tuple<matrix,matrix,matrix> LUP() const;
+        std::tuple<matrix,matrix,matrix> LUP() const;
 
+        vector GSSolve(vector B, uint iterNum=100) const;
+        vector JacobiSolve(vector B, uint iterNum=100) const;
+        vector SOCSolve(vector B, uint iterNum=100) const;
 
         void rsub(unsigned int r1, unsigned int r2, double m)
         {
