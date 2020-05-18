@@ -76,7 +76,7 @@ std::tuple<matrix,matrix,vector> matrix::LUPVec() const
     return std::make_tuple(l,u,p);
 }
 
-tuple<matrix,matrix,matrix> matrix::LUP() const
+std::tuple<matrix,matrix,matrix> matrix::LUP() const
 {
     if (this->r != this->c)
         throw SquareException();
@@ -114,5 +114,82 @@ tuple<matrix,matrix,matrix> matrix::LUP() const
             l.m[i][k] = a.m[i][k];
         }
     }
-    return make_tuple(l,u,p);
+    return std::make_tuple(l,u,p);
+}
+
+vector matrix::GSSolve(vector B, uint iterNum) const
+{
+    uint num=this->getc();
+    vector X(num);
+
+    for(uint nowIter=1;nowIter<=iterNum;nowIter++)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            double sum1 = 0.0;
+            double sum2 = 0.0;
+
+            for (int j = 0; j < i; j++)
+                sum1 += this->m[i][j] * X.v[j];
+
+            for (int j = i + 1; j < num; j++)
+                sum2 += this->m[i][j] * X.v[j];
+
+            X.v[i] = (B.v[i] - sum1 - sum2) / this->m[i][i];
+        }
+    }
+
+    return X;
+}
+
+vector matrix::JacobiSolve(vector B, uint iterNum) const
+{
+    uint num=this->getc();
+    vector X(num);
+
+    for(uint nowIter=1;nowIter<=iterNum;nowIter++)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            double sum = 0.0;
+            for (int j = 0; j < num; j++)
+            {
+                if (j != i)
+                {
+                    sum += this->m[i][j] * X.v[j];
+                }
+            }
+            X.v[i] = (B.v[i] - sum) / this->m[i][i];
+        }
+    }
+
+    return X;
+}
+
+vector matrix::SOCSolve(vector B, uint iterNum) const
+{
+    uint num=this->getc();
+    vector X(num);
+    const double Omega=1.15;
+
+    for(uint nowIter=1;nowIter<=iterNum;nowIter++)
+    {
+        for (int i = 0; i < num; i++)
+        {
+            double sum1 = 0.0;
+            double sum2 = 0.0;
+
+            for (int j = 0; j < i; j++) {
+                sum1 += this->m[i][j] * X.v[j];
+            }
+
+            for (int j = i + 1; j < num; j++) {
+                sum2 += this->m[i][j] * X.v[j];
+            }
+
+            X.v[i] = (1-Omega)* X.v[i] + Omega*((B.v[i] - sum1 - sum2) / this->m[i][i]);
+        }
+    }
+
+    return X;
 }
